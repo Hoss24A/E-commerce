@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGadget - Checkout</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        .checkout-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .step.active .step-number {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .step.completed .step-number {
+            background-color: #198754;
+            color: white;
+        }
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background-color: #ddd;
+            z-index: -1;
+        }
+        .step.completed:not(:last-child)::after {
+            background-color: #198754;
+        }
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+        #checkoutForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">TechGadget</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="cart.html" class="btn btn-outline-light me-2">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                        <span id="cartCount" class="badge bg-danger">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout Process -->
+    <div class="container my-5">
+        <div class="checkout-steps">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <div class="step-title">Review Cart</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Information</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Payment</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-title">Confirmation</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Cart Review Section -->
+                <div class="card mb-4" id="cartReview">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Review Your Order</h5>
+                    </div>
+                    <div class="card-body" id="cartItems">
+                        <!-- Cart items will be loaded here by React -->
+                    </div>
+                    <div class="card-footer">
+                        <a href="cart.html" class="btn btn-outline-secondary">Back to Cart</a>
+                        <button id="proceedToCheckout" class="btn btn-primary float-end">Proceed to Checkout</button>
+                    </div>
+                </div>
+                
+                <!-- Checkout Form (initially hidden) -->
+                <div class="card mb-4" id="checkoutForm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Customer Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="customerInfoForm">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="firstName" class="form-label">First name</label>
+                                    <input type="text" class="form-control" id="firstName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="lastName" class="form-label">Last name</label>
+                                    <input type="text" class="form-control" id="lastName" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="country" class="form-label">Country</label>
+                                    <select class="form-select" id="country" required>
+                                        <option value="">Select...</option>
+                                        <option value="US">United States</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="UK">United Kingdom</option>
+                                        <option value="AU">Australia</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="state" class="form-label">State</label>
+                                    <input type="text" class="form-control" id="state" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="zip" class="form-label">ZIP Code</label>
+                                    <input type="text" class="form-control" id="zip" required>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <h5 class="mb-3">Payment</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
+                                <label class="form-check-label" for="creditCard">
+                                    Credit Card
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
+                                <label class="form-check-label" for="paypal">
+                                    PayPal
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransfer">
+                                <label class="form-check-label" for="bankTransfer">
+                                    Bank Transfer
+                                </label>
+                            </div>
+                            <div id="creditCardForm" class="mt-3">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="cc-name" class="form-label">Name on card</label>
+                                        <input type="text" class="form-control" id="cc-name">
+                                        <small class="text-muted">Full name as displayed on card</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="cc-number" class="form-label">Credit card number</label>
+                                        <input type="text" class="form-control" id="cc-number">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="cc-expiration" class="form-label">Expiration</label>
+                                        <input type="text" class="form-control" id="cc-expiration">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="cc-cvv" class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="cc-cvv">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <div class="d-flex justify-content-between">
+                                <button type="button" id="backToCartReview" class="btn btn-outline-secondary">Back</button>
+                                <button type="submit" class="btn btn-primary">Complete Order</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body" id="orderSummary">
+                        <!-- Order summary will be loaded here by React -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>TechGadget</h5>
+                    <p>Your trusted source for the latest tech gadgets and accessories at competitive prices.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white">Home</a></li>
+                        <li><a href="products.html" class="text-white">Products</a></li>
+                        <li><a href="#" class="text-white">About Us</a></li>
+                        <li><a href="#" class="text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> 123 Tech Street, Silicon Valley</p>
+                        <p><i class="fas fa-phone me-2"></i> (123) 456-7890</p>
+                        <p><i class="fas fa-envelope me-2"></i> info@techgadget.com</p>
+                    </address>
+                </div>
+            </div>
+            <hr class="bg-light">
+            <div class="text-center">
+                <p>&copy; 2023 TechGadget. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script type="text/babel">
+        // Cart state
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Update cart count
+        function updateCartCount() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+        
+        // Cart Item Component
+        function CartItem({ item, onUpdate, onRemove }) {
+            const [quantity, setQuantity] = React.useState(item.quantity);
+            
+            const handleQuantityChange = (e) => {
+                const newQuantity = parseInt(e.target.value) || 1;
+                setQuantity(newQuantity);
+                onUpdate(item.id, newQuantity);
+            };
+            
+            const decreaseQuantity = () => {
+                if (quantity > 1) {
+                    const newQuantity = quantity - 1;
+                    setQuantity(newQuantity);
+                    onUpdate(item.id, newQuantity);
+                }
+            };
+            
+            const increaseQuantity = () => {
+                const newQuantity = quantity + 1;
+                setQuantity(newQuantity);
+                onUpdate(item.id, newQuantity);
+            };
+            
+            return (
+                <div className="row mb-3 align-items-center">
+                    <div className="col-md-2">
+                        <img src={item.image} alt={item.name} className="img-fluid cart-item-image" />
+                    </div>
+                    <div className="col-md-4">
+                        <h6 className="mb-0">{item.name}</h6>
+                        <small className="text-muted">{item.category}</small>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="input-group">
+                            <button className="btn btn-outline-secondary" type="button" onClick={decreaseQuantity}>
+                                <i className="fas fa-minus"></i>
+                            </button>
+                            <input 
+                                type="number" 
+                                className="form-control text-center" 
+                                value={quantity} 
+                                min="1"
+                                onChange={handleQuantityChange}
+                            />
+                            <button className="btn btn-outline-secondary" type="button" onClick={increaseQuantity}>
+                                <i className="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div className="col-md-2 text-end">
+                        <strong>${(item.price * quantity).toFixed(2)}</strong>
+                    </div>
+                    <div className="col-md-1 text-end">
+                        <button className="btn btn-outline-danger btn-sm" onClick={() => onRemove(item.id)}>
+                            <i className="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Cart Items Component
+        function CartItems({ cart, onUpdate, onRemove }) {
+            if (cart.length === 0) {
+                return (
+                    <div className="text-center py-5">
+                        <i className="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                        <h5>Your cart is empty</h5>
+                        <p>Start shopping to add items to your cart</p>
+                        <a href="products.html" className="btn btn-primary">Browse Products</a>
+                    </div>
+                );
+            }
+            
+            return (
+                <div>
+                    {cart.map(item => (
+                        <CartItem 
+                            key={item.id} 
+                            item={item} 
+                            onUpdate={onUpdate}
+                            onRemove={onRemove}
+                        />
+                    ))}
+                </div>
+            );
+        }
+        
+        // Order Summary Component
+        function OrderSummary({ cart }) {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 0 ? (subtotal > 500 ? 0 : 15) : 0;
+            const tax = subtotal * 0.08;
+            const total = subtotal + shipping + tax;
+            
+            return (
+                <div>
+                    <div className="d-flex justify-content-between mb-2">
+                        <span>Subtotal ({cart.reduce((total, item) => total + item.quantity, 0)} items)</span>
+                        <span>${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span>${shipping.toFixed(2)}</span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-2">
+                        <span>Tax</span>
+                        <span>${tax.toFixed(2)}</span>
+                    </div>
+                    <hr />
+                    <div className="d-flex justify-content-between mb-3">
+                        <strong>Total</strong>
+                        <strong>${total.toFixed(2)}</strong>
+                    </div>
+                    
+                    {cart.length > 0 && (
+                        <div className="border p-3 mb-3">
+                            <h6 className="mb-2">Order Items</h6>
+                            {cart.map(item => (
+                                <div key={item.id} className="d-flex justify-content-between small mb-2">
+                                    <span>{item.name} x {item.quantity}</span>
+                                    <span>${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        
+        // Initialize cart count
+        updateCartCount();
+        
+        // Update cart item quantity
+        const updateCartItem = (id, quantity) => {
+            const item = cart.find(item => item.id === id);
+            if (item) {
+                item.quantity = quantity;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                updateOrderSummary();
+            }
+        };
+        
+        // Remove cart item
+        const removeCartItem = (id) => {
+            cart = cart.filter(item => item.id !== id);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            updateOrderSummary();
+            
+            // Re-render cart items
+            ReactDOM.render(
+                <CartItems cart={cart} onUpdate={updateCartItem} onRemove={removeCartItem} />,
+                document.getElementById('cartItems')
+            );
+        };
+        
+        // Update order summary
+        function updateOrderSummary() {
+            ReactDOM.render(
+                <OrderSummary cart={cart} />,
+                document.getElementById('orderSummary')
+            );
+        }
+        
+        // Render cart items and order summary
+        ReactDOM.render(
+            <CartItems cart={cart} onUpdate={updateCartItem} onRemove={removeCartItem} />,
+            document.getElementById('cartItems')
+        );
+        updateOrderSummary();
+        
+        // Proceed to checkout button
+        document.getElementById('proceedToCheckout').addEventListener('click', function() {
+            if (cart.length === 0) {
+                alert('Your cart is empty. Please add some products before checkout.');
+                return;
+            }
+            
+            // Hide cart review, show checkout form
+            document.getElementById('cartReview').style.display = 'none';
+            document.getElementById('checkoutForm').style.display = 'block';
+            
+            // Update steps
+            document.querySelectorAll('.step')[0].classList.remove('active');
+            document.querySelectorAll('.step')[0].classList.add('completed');
+            document.querySelectorAll('.step')[1].classList.add('active');
+        });
+        
+        // Back to cart review button
+        document.getElementById('backToCartReview').addEventListener('click', function() {
+            // Show cart review, hide checkout form
+            document.getElementById('cartReview').style.display = 'block';
+            document.getElementById('checkoutForm').style.display = 'none';
+            
+            // Update steps
+            document.querySelectorAll('.step')[0].classList.add('active');
+            document.querySelectorAll('.step')[0].classList.remove('completed');
+            document.querySelectorAll('.step')[1].classList.remove('active');
+        });
+        
+        // Handle form submission
+        document.getElementById('customerInfoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, you would process payment here
+            // For this demo, we'll just show a confirmation
+            
+            // Generate a random order number
+            const orderNumber = 'TG-' + Math.floor(Math.random() * 1000000);
+            
+            // Save order details (in a real app, you'd send to server)
+            const order = {
+                orderNumber,
+                customer: {
+                    email: document.getElementById('email').value,
+                    name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+                    address: document.getElementById('address').value,
+                    country: document.getElementById('country').value,
+                    state: document.getElementById('state').value,
+                    zip: document.getElementById('zip').value
+                },
+                paymentMethod: document.querySelector('input[name="paymentMethod"]:checked').id,
+                items: [...cart],
+                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.08 + 
+                       (cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) > 500 ? 0 : 15),
+                date: new Date().toISOString()
+            };
+            
+            localStorage.setItem('currentOrder', JSON.stringify(order));
+            
+            // Clear the cart
+            localStorage.removeItem('cart');
+            cart = [];
+            updateCartCount();
+            
+            // Redirect to confirmation page with order number
+            window.location.href = `confirmation.html?order=${orderNumber}`;
+        });
+        
+        // Show/hide credit card form based on payment method
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('creditCardForm').style.display = 
+                    this.id === 'creditCard' ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

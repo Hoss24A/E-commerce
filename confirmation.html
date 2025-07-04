@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGadget - Order Confirmation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        .confirmation-icon {
+            font-size: 5rem;
+            color: #198754;
+            margin-bottom: 20px;
+        }
+        .survey-option {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .survey-option:hover {
+            transform: scale(1.05);
+        }
+        .survey-option.selected {
+            background-color: #f8f9fa;
+            border-color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">TechGadget</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="cart.html" class="btn btn-outline-light me-2">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                        <span id="cartCount" class="badge bg-danger">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Order Confirmation -->
+    <div class="container my-5">
+        <div class="text-center">
+            <div class="confirmation-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Order Confirmed!</h2>
+            <p class="lead">Thank you for your purchase</p>
+            
+            <div class="card mx-auto mb-5" style="max-width: 600px;">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Order #<span id="orderNumber"></span></h5>
+                    <p class="card-text" id="orderDate"></p>
+                    <p class="card-text">A confirmation email has been sent to <strong id="customerEmail"></strong></p>
+                    <hr>
+                    <h6>Order Summary</h6>
+                    <div id="orderSummary"></div>
+                    <a href="products.html" class="btn btn-primary mt-3">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Customer Survey -->
+        <div class="card mx-auto mb-5" style="max-width: 800px;" id="surveySection">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Quick Survey</h5>
+            </div>
+            <div class="card-body">
+                <p>We'd love to hear about your shopping experience. It'll only take a minute!</p>
+                
+                <form id="surveyForm">
+                    <div class="mb-4">
+                        <h6>How satisfied are you with your shopping experience?</h6>
+                        <div class="row text-center mt-3">
+                            <div class="col survey-option" data-value="5">
+                                <i class="fas fa-smile-beam fa-3x text-success mb-2"></i>
+                                <p>Very Satisfied</p>
+                            </div>
+                            <div class="col survey-option" data-value="4">
+                                <i class="fas fa-smile fa-3x text-primary mb-2"></i>
+                                <p>Satisfied</p>
+                            </div>
+                            <div class="col survey-option" data-value="3">
+                                <i class="fas fa-meh fa-3x text-warning mb-2"></i>
+                                <p>Neutral</p>
+                            </div>
+                            <div class="col survey-option" data-value="2">
+                                <i class="fas fa-frown fa-3x text-secondary mb-2"></i>
+                                <p>Dissatisfied</p>
+                            </div>
+                            <div class="col survey-option" data-value="1">
+                                <i class="fas fa-angry fa-3x text-danger mb-2"></i>
+                                <p>Very Dissatisfied</p>
+                            </div>
+                        </div>
+                        <input type="hidden" id="satisfaction" name="satisfaction" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>How did you hear about us?</h6>
+                        <select class="form-select" id="referral" name="referral">
+                            <option value="">Select an option</option>
+                            <option value="search">Search Engine (Google, Bing, etc.)</option>
+                            <option value="social">Social Media</option>
+                            <option value="friend">Friend or Family</option>
+                            <option value="ad">Advertisement</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>Would you recommend TechGadget to others?</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="recommend" id="recommendYes" value="yes">
+                            <label class="form-check-label" for="recommendYes">Yes</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="recommend" id="recommendNo" value="no">
+                            <label class="form-check-label" for="recommendNo">No</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>Any additional comments or suggestions?</h6>
+                        <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Submit Survey</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>TechGadget</h5>
+                    <p>Your trusted source for the latest tech gadgets and accessories at competitive prices.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white">Home</a></li>
+                        <li><a href="products.html" class="text-white">Products</a></li>
+                        <li><a href="#" class="text-white">About Us</a></li>
+                        <li><a href="#" class="text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> 123 Tech Street, Silicon Valley</p>
+                        <p><i class="fas fa-phone me-2"></i> (123) 456-7890</p>
+                        <p><i class="fas fa-envelope me-2"></i> info@techgadget.com</p>
+                    </address>
+                </div>
+            </div>
+            <hr class="bg-light">
+            <div class="text-center">
+                <p>&copy; 2023 TechGadget. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script type="text/babel">
+        // Cart state
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Update cart count
+        function updateCartCount() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+        
+        // Order Summary Component
+        function OrderSummary({ order }) {
+            return (
+                <div>
+                    <div className="d-flex justify-content-between">
+                        <span>Items ({order.items.reduce((total, item) => total + item.quantity, 0)})</span>
+                        <span>${order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}</span>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                        <span>Shipping</span>
+                        <span>${order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) > 500 ? '0.00' : '15.00'}</span>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                        <span>Tax</span>
+                        <span>${order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 0.08.toFixed(2)}</span>
+                    </div>
+                    <hr />
+                    <div className="d-flex justify-content-between fw-bold">
+                        <span>Total</span>
+                        <span>${order.total.toFixed(2)}</span>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Initialize cart count
+        updateCartCount();
+        
+        // Get order number from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderNumber = urlParams.get('order');
+        
+        // Get order details
+        const order = JSON.parse(localStorage.getItem('currentOrder'));
+        
+        if (order) {
+            // Display order information
+            document.getElementById('orderNumber').textContent = order.orderNumber;
+            document.getElementById('customerEmail').textContent = order.customer.email;
+            document.getElementById('orderDate').textContent = `Placed on ${new Date(order.date).toLocaleDateString()}`;
+            
+            // Render order summary
+            ReactDOM.render(
+                <OrderSummary order={order} />,
+                document.getElementById('orderSummary')
+            );
+        } else {
+            // No order found
+            document.getElementById('surveySection').style.display = 'none';
+            document.querySelector('.card-body').innerHTML = `
+                <div class="alert alert-danger">Order not found. Please check your order number.</div>
+                <a href="products.html" class="btn btn-primary">Continue Shopping</a>
+            `;
+        }
+        
+        // Survey functionality
+        document.querySelectorAll('.survey-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                document.querySelectorAll('.survey-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Update hidden input value
+                document.getElementById('satisfaction').value = this.dataset.value;
+            });
+        });
+        
+        // Handle survey submission
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, you would send this data to your server
+            const surveyData = {
+                orderNumber: order.orderNumber,
+                satisfaction: document.getElementById('satisfaction').value,
+                referral: document.getElementById('referral').value,
+                recommend: document.querySelector('input[name="recommend"]:checked')?.value,
+                comments: document.getElementById('comments').value,
+                date: new Date().toISOString()
+            };
+            
+            // Save survey data to localStorage (in a real app, use AJAX to send to server)
+            const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+            surveys.push(surveyData);
+            localStorage.setItem('surveys', JSON.stringify(surveys));
+            
+            // Show thank you message
+            document.getElementById('surveyForm').innerHTML = `
+                <div class="alert alert-success text-center">
+                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                    <h5>Thank you for your feedback!</h5>
+                    <p>We appreciate you taking the time to help us improve.</p>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
